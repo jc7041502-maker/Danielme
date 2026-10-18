@@ -28,14 +28,8 @@ import { useTitlePreference } from '../contexts/TitlePreferenceContext'
 import { useContentType, type ContentType } from '../contexts/ContentTypeContext'
 import OptionTabs from '../components/common/OptionTabs'
 import MangaHome from '../components/manga/MangaHome'
-import TvHome from '../components/tv/TvHome'
-import AsmrHome from '../components/asmr/AsmrHome'
-import TvSpotlightBanner from '../components/tv/TvSpotlightBanner'
 import MangaSpotlightBanner from '../components/manga/MangaSpotlightBanner'
-import AsmrSpotlightBanner from '../components/asmr/AsmrSpotlightBanner'
-import { useTvTrending } from '../hooks/useTv'
 import { useMangaTrending } from '../hooks/useManga'
-import { useAsmrSpotlight } from '../hooks/useAsmr'
 import { useTRPC } from '../lib/trpc'
 import styles from './Home.module.css'
 
@@ -44,10 +38,7 @@ type ActiveTab = 'latest' | 'season' | 'popular' | 'week'
 const CONTENT_OPTIONS: { value: ContentType; label: string }[] = [
   { value: 'anime', label: 'Anime' },
   { value: 'manga', label: 'Manga' },
-  { value: 'tv', label: 'TV & Movies' },
-  { value: 'asmr', label: 'ASMR' },
 ]
-
 const Home: React.FC = () => {
   const queryClient = useQueryClient()
   const trpc = useTRPC()
@@ -118,15 +109,6 @@ const Home: React.FC = () => {
   ])
 
   const { data: spotlightAnime, isLoading: loadingSpotlight } = useSpotlightBanners()
-  const { data: tvTrending, isLoading: loadingTvSpotlight } = useTvTrending(
-    'all',
-    'week',
-    1,
-    contentType === 'tv'
-  )
-  const { data: asmrSpotlight, isLoading: loadingAsmrSpotlight } = useAsmrSpotlight(
-    contentType === 'asmr'
-  )
   const { data: mangaTrending, isLoading: loadingMangaSpotlight } = useMangaTrending()
   const cwList = useMemo(() => continueWatchingInfinite?.pages || [], [continueWatchingInfinite])
 
@@ -278,14 +260,6 @@ const Home: React.FC = () => {
           spotlightAnime.length > 0 && <SpotlightBanner animeList={spotlightAnime} />
         ))}
 
-      {contentType === 'tv' &&
-        (loadingTvSpotlight && !tvTrending?.results?.length ? (
-          <SpotlightSkeleton />
-        ) : (
-          tvTrending?.results &&
-          tvTrending.results.length > 0 && <TvSpotlightBanner items={tvTrending.results} />
-        ))}
-
       {contentType === 'manga' &&
         (loadingMangaSpotlight && !mangaTrending?.length ? (
           <SpotlightSkeleton />
@@ -294,14 +268,7 @@ const Home: React.FC = () => {
           mangaTrending.length > 0 && <MangaSpotlightBanner mangaList={mangaTrending} />
         ))}
 
-      {contentType === 'asmr' &&
-        (loadingAsmrSpotlight && !asmrSpotlight?.length ? (
-          <SpotlightSkeleton />
-        ) : (
-          asmrSpotlight && asmrSpotlight.length > 0 && <AsmrSpotlightBanner works={asmrSpotlight} />
-        ))}
-
-      <OptionTabs
+   <OptionTabs
         ariaLabel="Content type"
         options={CONTENT_OPTIONS}
         value={contentType}
@@ -310,10 +277,6 @@ const Home: React.FC = () => {
 
       {contentType === 'manga' ? (
         <MangaHome />
-      ) : contentType === 'tv' ? (
-        <TvHome />
-      ) : contentType === 'asmr' ? (
-        <AsmrHome />
       ) : (
         <>
           <AnimeSection

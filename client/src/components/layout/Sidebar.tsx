@@ -18,25 +18,15 @@ const Sidebar: React.FC = () => {
   }
 
   const isManga = contentType === 'manga'
-  const isTv = contentType === 'tv'
-  const isAsmr = contentType === 'asmr'
 
   const navItems = [
     { to: '/', icon: <Icon name="home" />, label: 'Home' },
     isManga
       ? { to: '/manga', icon: <Icon name="book" />, label: 'Manga' }
-      : isTv
-        ? { to: '/tv-search', icon: <Icon name="tv" />, label: 'TV and Movies' }
-        : isAsmr
-          ? { to: '/asmr', icon: <Icon name="headphones" />, label: 'ASMR' }
-          : { to: '/search', icon: <Icon name="search" />, label: 'Search' },
+      : { to: '/search', icon: <Icon name="search" />, label: 'Search' },
     isManga
       ? { to: '/reading-list', icon: <Icon name="bookmark" />, label: 'Reading List' }
-      : isTv
-        ? { to: '/tv-watchlist', icon: <Icon name="clock" />, label: 'TV Watchlist' }
-        : isAsmr
-          ? { to: '/listening-list', icon: <Icon name="history" />, label: 'Listening List' }
-          : { to: '/watchlist', icon: <Icon name="clock" />, label: 'Watchlist' },
+      : { to: '/watchlist', icon: <Icon name="clock" />, label: 'Watchlist' },
     ...(contentType === 'anime'
       ? [{ to: '/insights', icon: <Icon name="chart-pie" />, label: 'Insights' }]
       : []),
